@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -37,6 +38,7 @@ var cmdCommit = &cobra.Command{
 			Author: &object.Signature{
 				Name:  config.User.Name,
 				Email: config.User.Email,
+				When:  time.Now(),
 			},
 		})
 		if err != nil {
