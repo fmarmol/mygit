@@ -89,7 +89,10 @@ var cmdCreateBranch = &cobra.Command{
 }
 
 var cmdBranch = &cobra.Command{
-	Use: "branch",
+	Use:   "branch",
+	Args:  cobra.ExactArgs(1),
+	Short: "switch to specified branch",
+
 	RunE: func(cmd *cobra.Command, args []string) error {
 		r, err := NewRepo()
 		if err != nil {
