@@ -7,7 +7,8 @@ import (
 )
 
 var cmdAddFiles = &cobra.Command{
-	Use: "add",
+	Use:   "add",
+	Short: "add files/folders",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			return fmt.Errorf("add expect at least one file")
