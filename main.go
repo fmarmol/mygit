@@ -60,6 +60,22 @@ func FindBranch(r *git.Repository, branch string) (*plumbing.Reference, error) {
 }
 
 var cmdRoot = &cobra.Command{}
+
+var cmdDeleteBranch = &cobra.Command{
+	Use: "delete",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		r, err := NewRepo()
+		if err != nil {
+			return err
+		}
+		branch, err := FindBranch(r, args[0])
+		if err != nil {
+			return err
+		}
+		return r.Storer.RemoveReference(branch.Name())
+	},
+}
+
 var cmdCreateBranch = &cobra.Command{
 	Use: "create",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -137,7 +153,7 @@ var cmdBranches = &cobra.Command{
 }
 
 func main() {
-	cmdBranch.AddCommand(cmdCreateBranch)
+	cmdBranch.AddCommand(cmdCreateBranch, cmdDeleteBranch)
 	cmdRoot.AddCommand(cmdBranches)
 	cmdRoot.AddCommand(cmdWorkTree)
 	cmdRoot.AddCommand(cmdBranch)
