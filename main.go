@@ -69,12 +69,10 @@ var cmdCreateBranch = &cobra.Command{
 		}
 		tree, err := r.Worktree()
 		if err != nil {
-			log.Println("ERROR:", err)
 			return err
 		}
 		head, err := r.Head()
 		if err != nil {
-			log.Println("ERROR:", err)
 			return err
 		}
 
@@ -92,9 +90,6 @@ var cmdCreateBranch = &cobra.Command{
 			Branch: plumbing.ReferenceName(branchName),
 			Create: true,
 		})
-		if err != nil {
-			log.Println("ERROR:", err)
-		}
 		return err
 	},
 }
