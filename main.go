@@ -67,10 +67,6 @@ var cmdCreateBranch = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		// branch, err := FindBranch(r, args[0])
-		// if err != nil {
-		// 	return err
-		// }
 		tree, err := r.Worktree()
 		if err != nil {
 			log.Println("ERROR:", err)
@@ -106,7 +102,19 @@ var cmdCreateBranch = &cobra.Command{
 var cmdBranch = &cobra.Command{
 	Use: "branch",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
+		r, err := NewRepo()
+		if err != nil {
+			return err
+		}
+		t, err := r.Worktree()
+		if err != nil {
+			return err
+		}
+		b, err := FindBranch(r, args[0])
+		if err != nil {
+			return err
+		}
+		return t.Checkout(&git.CheckoutOptions{Branch: b.Name()})
 	},
 }
 
