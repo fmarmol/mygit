@@ -133,13 +133,10 @@ var cmdBranch = &cobra.Command{
 }
 
 var cmdBranches = &cobra.Command{
-	Use: "branches",
+	Use:   "branches",
+	Short: "list branches",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		path, err := os.Getwd()
-		if err != nil {
-			return err
-		}
-		r, err := git.PlainOpen(path)
+		r, err := NewRepo()
 		if err != nil {
 			return err
 		}
@@ -151,17 +148,43 @@ var cmdBranches = &cobra.Command{
 			fmt.Println(ref.Hash(), ref.Name())
 			return nil
 		})
+		remotesFlag, err := cmd.Flags().GetBool("remotes")
+		if err != nil {
+			return err
+		}
+		if !remotesFlag {
+			return nil
+		}
+		remotes, err := r.Remotes()
+		if err != nil {
+			return err
+		}
+		for _, remote := range remotes {
+			refs, err := remote.List(&git.ListOptions{})
+			if err != nil {
+				return err
+			}
+			for _, ref := range refs {
+				if !ref.Hash().IsZero() {
+					fmt.Println(remote.Config().Name, ref.Hash(), ref.Name())
+				}
+			}
+		}
 		return nil
 	},
 }
 
 func main() {
 	cmdBranch.AddCommand(cmdCreateBranch, cmdDeleteBranch)
+
+	flags := cmdBranches.Flags()
+	flags.BoolP("remotes", "r", false, "display remotes branches")
+
 	cmdRoot.AddCommand(cmdBranches)
 	cmdRoot.AddCommand(cmdWorkTree)
 	cmdRoot.AddCommand(cmdBranch)
 	err := cmdRoot.Execute()
 	if err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 }
