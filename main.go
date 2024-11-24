@@ -51,6 +51,9 @@ func FindBranch(r *git.Repository, branch string) (*plumbing.Reference, error) {
 		}
 		return nil
 	})
+	if refFound == nil {
+		return nil, fmt.Errorf("branch %v not found", branch)
+	}
 	ref, err := r.Reference(refFound.Name(), true)
 	if err != nil {
 		return nil, err
