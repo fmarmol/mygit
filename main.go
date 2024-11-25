@@ -108,6 +108,7 @@ var cmdCreateBranch = &cobra.Command{
 			Hash:   head.Hash(),
 			Branch: plumbing.ReferenceName(branchName),
 			Create: true,
+			Keep:   true,
 		})
 		return err
 	},
