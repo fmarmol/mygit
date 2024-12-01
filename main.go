@@ -35,9 +35,15 @@ func main() {
 	cmdBranch.AddCommand(cmdCreateBranch, cmdDeleteBranch)
 	cmdRemote.AddCommand(cmdAddRemote)
 
+	//CONFIG
+	cmdSetConfig.AddCommand(cmdSetConfigName)
+	cmdSetConfig.AddCommand(cmdSetConfigEmail)
+	cmdConfig.AddCommand(cmdSetConfig)
+
 	flags := cmdBranches.Flags()
 	flags.BoolP("remotes", "r", false, "display remotes branches")
 
+	cmdRoot.AddCommand(cmdConfig)
 	cmdRoot.AddCommand(cmdCommit)
 	cmdRoot.AddCommand(cmdAddFiles)
 	cmdRoot.AddCommand(cmdInit)
