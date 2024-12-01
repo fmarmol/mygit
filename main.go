@@ -177,6 +177,7 @@ var cmdBranches = &cobra.Command{
 
 func main() {
 	cmdBranch.AddCommand(cmdCreateBranch, cmdDeleteBranch)
+	cmdRemote.AddCommand(cmdAddRemote)
 
 	flags := cmdBranches.Flags()
 	flags.BoolP("remotes", "r", false, "display remotes branches")
@@ -185,6 +186,7 @@ func main() {
 	cmdRoot.AddCommand(cmdBranches)
 	cmdRoot.AddCommand(cmdWorkTree)
 	cmdRoot.AddCommand(cmdBranch)
+	cmdRoot.AddCommand(cmdRemote)
 	err := cmdRoot.Execute()
 	if err != nil {
 		os.Exit(1)
