@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"path/filepath"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
@@ -16,15 +15,33 @@ var cmdPush = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return nil
-		refSpec := fmt.Sprintf("refs/heads/%s", "main") // or any branch name
+		head, err := r.Head()
+		if err != nil {
+			return err
+		}
+		// remote, err := r.Remote("origin")
+		// if err != nil {
+		// 	return nil
+		// }
+		// for _, ref := range remote.Config().Fetch {
+		// 	if ref.Match(head.Name()) {
+		// 		fmt.Println(ref, head.Name().String())
+		// 	}
+
+		// }
+		// return nil
+		// fmt.Println("HEAD TARGET:", filepath.Base(head.Name().String()), "END")
+		branchName := filepath.Base(head.Name().String())
+		// refSpec := "+" + head.Name().String() + ":refs/remotes/origin/" + filepath.Base(head.Name().String())
+		// _ = refSpec
+		// fmt.Println(refSpec)
 		err = r.Push(&git.PushOptions{
 			RemoteName: "origin",
-			RefSpecs:   []config.RefSpec{config.RefSpec(refSpec)},
+			RefSpecs:   []config.RefSpec{config.RefSpec(branchName + ":" + branchName)},
 			Auth:       nil, // Optional: Use for authentication, e.g., SSH keys or credentials.
 		})
 		if err != nil {
-			log.Fatalf("Failed to push to remote: %v", err)
+			return err
 		}
 		return nil
 	},
