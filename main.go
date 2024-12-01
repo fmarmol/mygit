@@ -181,6 +181,7 @@ func main() {
 	flags := cmdBranches.Flags()
 	flags.BoolP("remotes", "r", false, "display remotes branches")
 
+	cmdRoot.AddCommand(cmdInit)
 	cmdRoot.AddCommand(cmdBranches)
 	cmdRoot.AddCommand(cmdWorkTree)
 	cmdRoot.AddCommand(cmdBranch)
