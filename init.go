@@ -8,7 +8,7 @@ import (
 var cmdInit = &cobra.Command{
 	Use: "init",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		_, err := git.PlainInit(".", true)
+		_, err := git.PlainInit(".", false)
 		return err
 	},
 }
