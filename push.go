@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/go-git/go-git/v5"
@@ -32,12 +33,14 @@ var cmdPush = &cobra.Command{
 		// return nil
 		// fmt.Println("HEAD TARGET:", filepath.Base(head.Name().String()), "END")
 		branchName := filepath.Base(head.Name().String())
-		// refSpec := "+" + head.Name().String() + ":refs/remotes/origin/" + filepath.Base(head.Name().String())
+		_ = branchName
+		// refSpec := head.Name().String() + ":refs/remotes/origin/" + filepath.Base(head.Name().String())
+		refSpec := head.Name().String() + ":" + head.Name().String()
 		// _ = refSpec
-		// fmt.Println(refSpec)
+		fmt.Println(refSpec)
 		err = r.Push(&git.PushOptions{
 			RemoteName: "origin",
-			RefSpecs:   []config.RefSpec{config.RefSpec(branchName + ":" + branchName)},
+			RefSpecs:   []config.RefSpec{config.RefSpec(refSpec)},
 			Auth:       nil, // Optional: Use for authentication, e.g., SSH keys or credentials.
 		})
 		if err != nil {
