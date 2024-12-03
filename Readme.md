@@ -5,3 +5,4 @@ I created this git cli with explicit command help and simplified usage.
 
 
 test
+TEST
