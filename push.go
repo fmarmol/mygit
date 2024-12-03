@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/spf13/cobra"
@@ -16,15 +13,18 @@ var cmdPush = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return nil
-		refSpec := fmt.Sprintf("refs/heads/%s", "main") // or any branch name
+		head, err := r.Head()
+		if err != nil {
+			return err
+		}
+		refSpec := head.Name().String() + ":" + head.Name().String()
 		err = r.Push(&git.PushOptions{
 			RemoteName: "origin",
 			RefSpecs:   []config.RefSpec{config.RefSpec(refSpec)},
-			Auth:       nil, // Optional: Use for authentication, e.g., SSH keys or credentials.
+			Auth:       nil,
 		})
 		if err != nil {
-			log.Fatalf("Failed to push to remote: %v", err)
+			return err
 		}
 		return nil
 	},
