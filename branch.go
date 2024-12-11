@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strings"
 
+	"github.com/agnivade/levenshtein"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/spf13/cobra"
@@ -15,21 +17,38 @@ func FindBranch(r *git.Repository, branch string) (*plumbing.Reference, error) {
 	if err != nil {
 		return nil, err
 	}
-	var refFound *plumbing.Reference
+
+	type candidate struct {
+		score int
+		ref   *plumbing.Reference
+	}
+
+	candidates := []candidate{}
+
 	branches.ForEach(func(ref *plumbing.Reference) error {
 		if strings.Contains(ref.Name().String(), branch) {
-			refFound = ref
-			return nil
+			score := levenshtein.ComputeDistance(branch, ref.Name().String())
+			candidates = append(candidates, candidate{
+				score: score,
+				ref:   ref,
+			})
 		}
 		if strings.Contains(ref.Hash().String(), branch) {
-			refFound = ref
-			return nil
+			score := levenshtein.ComputeDistance(branch, ref.Name().String())
+			candidates = append(candidates, candidate{
+				score: score,
+				ref:   ref,
+			})
 		}
 		return nil
 	})
-	if refFound == nil {
+	if len(candidates) == 0 {
 		return nil, fmt.Errorf("branch %v not found", branch)
 	}
+	sort.Slice(candidates, func(i, j int) bool {
+		return candidates[i].score < candidates[j].score
+	})
+	refFound := candidates[0].ref
 	ref, err := r.Reference(refFound.Name(), true)
 	if err != nil {
 		return nil, err
