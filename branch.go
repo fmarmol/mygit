@@ -125,7 +125,10 @@ var cmdBranch = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return t.Checkout(&git.CheckoutOptions{Branch: b.Name()})
+		return t.Checkout(&git.CheckoutOptions{
+			Branch: b.Name(),
+			Keep:   true,
+		})
 	},
 }
 
